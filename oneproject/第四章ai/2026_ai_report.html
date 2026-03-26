@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="2026年AI行业报告 - 适合爬虫学习的复杂HTML页面" />
+  <title>2026年AI行业报告 | 爬虫练习页面</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(19, 28, 53, 0.75);
+      --text: #e8ecff;
+      --muted: #a9b5dd;
+      --primary: #5aa8ff;
+      --secondary: #7a6cff;
+      --accent: #00d4ff;
+      --good: #25c982;
+      --warn: #f5b971;
+      --bad: #ff7a7a;
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at 20% 10%, #1b2856 0%, transparent 45%),
+                  radial-gradient(circle at 80% 0%, #1d1342 0%, transparent 35%),
+                  linear-gradient(160deg, #070b16, #111a33 60%, #0b1020);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 0.4px, transparent 0.4px);
+      background-size: 3px 3px;
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      background: rgba(8, 14, 31, 0.65);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+    }
+
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(0, 212, 255, .8);
+      animation: pulse 2.2s infinite;
+    }
+
+    @keyframes pulse {
+      70% { box-shadow: 0 0 0 16px rgba(0, 212, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+    }
+
+    .nav ul {
+      list-style: none;
+      display: flex;
+      gap: 16px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .95rem;
+      transition: .25s;
+    }
+
+    .nav a:hover { color: var(--text); }
+
+    main {
+      max-width: 1200px;
+      margin: 28px auto 60px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(88, 126, 255, 0.25), rgba(0, 212, 255, 0.12));
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 36px 30px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 480px;
+      height: 480px;
+      right: -140px;
+      top: -220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(122, 108, 255, 0.38), transparent 70%);
+      animation: drift 9s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(0px) rotate(0deg); }
+      to { transform: translateY(30px) rotate(10deg); }
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.2;
+    }
+
+    .hero p {
+      max-width: 760px;
+      color: var(--muted);
+      margin-top: 14px;
+      line-height: 1.8;
+    }
+
+    .tag-list {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag {
+      background: rgba(255, 255, 255, .09);
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: .85rem;
+      color: #d5deff;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: .95rem;
+    }
+
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      padding: 10px 8px;
+      vertical-align: top;
+    }
+
+    thead th {
+      color: #dbe4ff;
+      font-weight: 700;
+      background: rgba(255, 255, 255, .06);
+    }
+
+    .kpi-wrap {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .kpi {
+      padding: 14px;
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+      transition: transform .25s;
+    }
+
+    .kpi:hover { transform: translateY(-3px); }
+
+    .kpi .num {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .good { color: var(--good); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+
+    .timeline {
+      position: relative;
+      margin: 10px 0 0;
+      padding-left: 22px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: linear-gradient(var(--primary), var(--accent));
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 8px 0 16px 8px;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -20px;
+      top: 11px;
+      width: 10px;
+      height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(0,212,255,.15);
+    }
+
+    .chart {
+      margin-top: 12px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      height: 220px;
+      padding: 10px;
+      border-radius: 12px;
+      background: linear-gradient(to bottom, rgba(255,255,255,.06), transparent);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .bar {
+      flex: 1;
+      min-width: 28px;
+      position: relative;
+      border-radius: 10px 10px 4px 4px;
+      background: linear-gradient(180deg, var(--accent), var(--secondary));
+      animation: rise 1.2s ease-out backwards;
+    }
+
+    .bar:nth-child(1) { animation-delay: .05s; }
+    .bar:nth-child(2) { animation-delay: .12s; }
+    .bar:nth-child(3) { animation-delay: .2s; }
+    .bar:nth-child(4) { animation-delay: .28s; }
+    .bar:nth-child(5) { animation-delay: .36s; }
+
+    @keyframes rise {
+      from { transform: scaleY(0); transform-origin: bottom; }
+      to { transform: scaleY(1); }
+    }
+
+    .bar span {
+      position: absolute;
+      bottom: -26px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-size: .8rem;
+      white-space: nowrap;
+    }
+
+    details {
+      margin-top: 10px;
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,.03);
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: #dce6ff;
+    }
+
+    footer {
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      padding: 0 24px;
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .floating {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border: none;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      animation: floaty 3s ease-in-out infinite;
+    }
+
+    @keyframes floaty {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    @media (max-width: 960px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .kpi-wrap { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+    }
+
+    @media (max-width: 520px) {
+      .nav ul { display: none; }
+      .hero { padding: 26px 20px; }
+      .kpi-wrap { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- 顶部导航：可用于练习导航链接抓取 -->
+  <header>
+    <nav class="nav">
+      <div class="brand"><span class="pulse-dot"></span>AI INSIGHT 2026</div>
+      <ul>
+        <li><a href="#summary">摘要</a></li>
+        <li><a href="#market">市场</a></li>
+        <li><a href="#tech">技术</a></li>
+        <li><a href="#policy">政策</a></li>
+        <li><a href="#company">企业</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 英雄区：包含标题、介绍、关键词标签 -->
+    <section class="hero" id="summary">
+      <h1>2026年AI行业报告：规模化落地、监管深化与多模态竞争</h1>
+      <p>
+        本页面用于爬虫练习，汇总了2026年全球AI行业在市场规模、基础模型、硬件算力、行业应用、政策监管与企业竞争方面的关键数据。
+        内容包含卡片、表格、列表、时间轴、图表、折叠面板、表单和动态脚本等多种结构。
+      </p>
+      <div class="tag-list">
+        <span class="tag"># 生成式AI</span>
+        <span class="tag"># AI Agent</span>
+        <span class="tag"># 多模态模型</span>
+        <span class="tag"># 边缘推理</span>
+        <span class="tag"># AI治理</span>
+      </div>
+      <div class="kpi-wrap" aria-label="核心指标">
+        <div class="kpi"><div class="num good" data-count="1.18">0</div><div>全球AI市场规模（万亿美元）</div></div>
+        <div class="kpi"><div class="num" data-count="68">0</div><div>企业部署率（%）</div></div>
+        <div class="kpi"><div class="num warn" data-count="34">0</div><div>模型平均推理成本降幅（%）</div></div>
+        <div class="kpi"><div class="num bad" data-count="47">0</div><div>高风险场景合规审查占比（%）</div></div>
+      </div>
+    </section>
+
+    <section class="grid-2" id="market">
+      <article class="card">
+        <h2>一、市场分布（按区域）</h2>
+        <!-- 表格：适合练习表头/行抓取 -->
+        <table>
+          <thead>
+            <tr>
+              <th>区域</th>
+              <th>市场规模（亿美元）</th>
+              <th>同比增长</th>
+              <th>主要增长驱动</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>北美</td><td>4,180</td><td>+28%</td><td>企业级Agent平台、医疗AI</td></tr>
+            <tr><td>欧洲</td><td>2,430</td><td>+24%</td><td>制造业智能化、合规型AI产品</td></tr>
+            <tr><td>亚太</td><td>3,560</td><td>+33%</td><td>电商内容生成、金融风控自动化</td></tr>
+            <tr><td>中东与非洲</td><td>690</td><td>+38%</td><td>智慧城市、教育AI基础设施</td></tr>
+            <tr><td>拉美</td><td>510</td><td>+29%</td><td>客服自动化与中小企业SaaS</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card" id="tech">
+        <h2>二、技术趋势（2024-2026）</h2>
+        <!-- 简易柱状图：CSS高度+动画 -->
+        <div class="chart" aria-label="技术采纳指数图">
+          <div class="bar" style="height: 38%"><span>多模态</span></div>
+          <div class="bar" style="height: 56%"><span>RAG增强</span></div>
+          <div class="bar" style="height: 72%"><span>Agent</span></div>
+          <div class="bar" style="height: 64%"><span>小模型蒸馏</span></div>
+          <div class="bar" style="height: 80%"><span>端侧推理</span></div>
+        </div>
+        <ol>
+          <li>多模态模型进入“低延迟+高可控”阶段，图文视频统一生成能力成为标配。</li>
+          <li>企业知识库与RAG结合，降低“幻觉率”，提高问答可追溯性。</li>
+          <li>AI Agent从“对话助手”演化为“流程执行者”，可编排CRM、ERP和OA系统。</li>
+          <li>小模型与边缘部署成为降本关键，端云协同推理架构普及。</li>
+        </ol>
+      </article>
+    </section>
+
+    <section class="grid-2" id="policy">
+      <article class="card">
+        <h2>三、政策与治理里程碑</h2>
+        <!-- 时间轴：适合抓取日期、事件、分类 -->
+        <div class="timeline">
+          <div class="timeline-item">
+            <strong>2026-01</strong>：多国更新高风险AI系统审查细则，要求模型审计日志可追溯。
+          </div>
+          <div class="timeline-item">
+            <strong>2026-03</strong>：跨境数据流动标准新增“合成数据来源证明”条款。
+          </div>
+          <div class="timeline-item">
+            <strong>2026-06</strong>：医疗AI与金融AI上线前必须完成第三方偏差评估。
+          </div>
+          <div class="timeline-item">
+            <strong>2026-09</strong>：生成式内容平台普遍引入机器可读水印协议。
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="company">
+        <h2>四、代表性企业策略（示例）</h2>
+        <ul>
+          <li><b>云厂商A：</b>推出行业Agent商店，支持零代码流程编排与计费分账。</li>
+          <li><b>芯片厂商B：</b>发布推理优化架构，主打低功耗高吞吐推理场景。</li>
+          <li><b>应用厂商C：</b>在客服、营销、法务合同审核实现“AI+人工协同闭环”。</li>
+          <li><b>创业公司D：</b>专注医疗影像与病历结构化，采用垂直小模型策略。</li>
+        </ul>
+
+        <details>
+          <summary>查看风险提示与挑战</summary>
+          <p>1) 数据版权和训练来源合规压力持续上升；2) 模型安全对抗与提示注入攻击仍是关键风险；3) ROI评估缺乏统一标准，企业从POC到规模化仍存在组织阻力。</p>
+        </details>
+
+        <details>
+          <summary>查看2027展望（预测）</summary>
+          <p>预计2027年AI将进一步渗透企业流程中台，AI原生工作流将成为数字化升级核心。评估指标将从“模型能力”转向“任务完成率与业务价值闭环”。</p>
+        </details>
+      </article>
+    </section>
+
+    <!-- 表单：适合爬取 input/select/textarea 等不同字段 -->
+    <section class="card">
+      <h2>五、报告反馈收集表</h2>
+      <form id="feedback-form" action="#" method="post">
+        <label for="name">姓名</label><br />
+        <input id="name" name="name" type="text" placeholder="请输入姓名" required />
+        <br /><br />
+
+        <label for="role">职业角色</label><br />
+        <select id="role" name="role">
+          <option value="developer">开发者</option>
+          <option value="analyst">行业分析师</option>
+          <option value="investor">投资人</option>
+          <option value="student">学生/研究者</option>
+        </select>
+        <br /><br />
+
+        <fieldset>
+          <legend>最关注的AI赛道（可多选）</legend>
+          <label><input type="checkbox" name="track" value="model" /> 大模型</label>
+          <label><input type="checkbox" name="track" value="agent" /> Agent应用</label>
+          <label><input type="checkbox" name="track" value="chip" /> AI芯片</label>
+          <label><input type="checkbox" name="track" value="governance" /> AI治理</label>
+        </fieldset>
+        <br />
+
+        <label for="comment">补充意见</label><br />
+        <textarea id="comment" name="comment" rows="4" cols="50" placeholder="请输入你的观点..."></textarea>
+        <br /><br />
+
+        <button type="submit">提交反馈</button>
+      </form>
+      <p id="form-msg" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>数据说明：本页面为爬虫学习场景构造的示例数据，不代表真实投资建议。最后更新时间：<time datetime="2026-03-26">2026-03-26</time>。</p>
+  </footer>
+
+  <button class="floating" id="top-btn" title="返回顶部">↑ 返回顶部</button>
+
+  <script>
+    // 数字滚动动画：练习爬虫时可抓取 data-count 与动态文本
+    const counters = document.querySelectorAll('.num[data-count]');
+    counters.forEach(el => {
+      const target = Number(el.dataset.count);
+      let current = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        el.textContent = (target % 1 !== 0) ? current.toFixed(2) : Math.round(current);
+      }, 18);
+    });
+
+    // 返回顶部按钮
+    document.getElementById('top-btn').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // 表单提交提示（前端演示，阻止默认提交）
+    document.getElementById('feedback-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value || '访客';
+      document.getElementById('form-msg').textContent = `感谢 ${name} 的反馈，已记录你的意见。`;
+    });
+  </script>
+</body>
+</html>
